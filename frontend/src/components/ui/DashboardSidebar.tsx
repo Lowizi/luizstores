@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Home, Package, Settings, LogOut, User } from "lucide-react";
 
 /**
@@ -18,6 +18,7 @@ interface DashboardSidebarProps {
 
 export default function DashboardSidebar({ userName, userEmail }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -28,11 +29,12 @@ export default function DashboardSidebar({ userName, userEmail }: DashboardSideb
   const isActive = (path: string) => pathname === path;
 
   const handleLogout = () => {
-    // TODO: Connect to Django backend
-    // POST /api/auth/logout
-    // Clear tokens, redirect to home
-    console.log("Logging out...");
-    alert("Logged out! (Backend not connected yet)");
+    // Clear auth cookie
+    document.cookie = "auth_token=; path=/; max-age=0";
+    document.cookie = "pending_verification=; path=/; max-age=0";
+    
+    // Redirect to home page
+    router.push("/");
   };
 
   return (

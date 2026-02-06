@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/ui/Footer";
@@ -43,6 +44,10 @@ interface LoginFormData {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
+
   // State for form fields
   // Each field is controlled by React state
   const [formData, setFormData] = useState<LoginFormData>({
@@ -97,10 +102,12 @@ export default function LoginPage() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // TODO: On success:
-      // 1. Store JWT token (in httpOnly cookie via backend)
-      // 2. Redirect to dashboard or home
-      alert("Login successful! (Backend not connected yet)");
+      // Set auth cookie (in production, this comes from Django backend via httpOnly cookie)
+      // For now, we set it client-side for demo purposes
+      document.cookie = "auth_token=demo_token; path=/; max-age=86400";
+      
+      // Redirect to dashboard or the page they were trying to access
+      router.push(redirectTo);
 
     } catch (err) {
       // Handle errors

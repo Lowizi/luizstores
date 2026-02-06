@@ -104,6 +104,10 @@ export default function SignUpPage() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      // Set pending verification cookie (user registered but not verified)
+      // This allows access to verify-email page only
+      document.cookie = "pending_verification=true; path=/; max-age=3600";
+
       // Redirect to email verification page
       router.push("/verify-email");
 

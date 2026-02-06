@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 /**
@@ -17,6 +18,8 @@ import Link from "next/link";
  */
 
 export default function VerifyEmailPage() {
+  const router = useRouter();
+  
   // Store each digit in an array
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,9 +103,14 @@ export default function VerifyEmailPage() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // TODO: On success, redirect to dashboard
-      alert("Email verified! Redirecting to dashboard...");
-      // router.push('/dashboard');
+      // Clear pending verification cookie
+      document.cookie = "pending_verification=; path=/; max-age=0";
+      
+      // Set auth token (in production, this comes from Django backend)
+      document.cookie = "auth_token=verified_token; path=/; max-age=86400";
+      
+      // Redirect to dashboard
+      router.push("/dashboard");
 
     } catch (err) {
       setError("Invalid code. Please try again.");
